@@ -1,4 +1,4 @@
-import Cage as cg
+import Test_Cage as Cg
 import Materials
 import numpy as np
 from matplotlib import pyplot as plt
@@ -11,20 +11,23 @@ def plotter(number, result):
     plt.show()
 
 
-n = 5000
-first = cg.Mew(30, Materials.water) # 5 -40 10
-second = cg.Mew(-10, Materials.ice)
-third = cg.Mew(10, Materials.water)
+n = 1600
+first = Cg.Cage(20, Materials.water)
+second = Cg.Cage(-10, Materials.ice)
+third = Cg.Cage(10, Materials.water)
 # fourth = cg.Mew(-5, Materials.water)
 cells_l = [first, second, third]
-two_cells = np.zeros((n, 3))
+number_of_cells = np.zeros((n, 3))
 for i in range(n):
-    two_cells[i][0] = first.temperature
-    two_cells[i][1] = second.temperature
-    two_cells[i][2] = third.temperature
-    # two_cells[i][3] = fourth.temperature
-    cg.line_interaction(cells_l)
+    number_of_cells[i][0] = first.temperature
+    number_of_cells[i][1] = second.temperature
+    number_of_cells[i][2] = third.temperature
+    first.interaction(second)
+    second.interaction(first, third)
+    third.interaction(second)
+    first.change_temp()
+    second.change_temp()
+    third.change_temp()
 
-plotter(3, two_cells)
-# print(two_cells)
+plotter(len(cells_l), number_of_cells)
 print(first.material.name, second.material.name, third.material.name)
