@@ -1,4 +1,6 @@
 from xl_reader import starter
 
-answer, matrix = starter('C:\\Users\\bushanka\\Desktop\\test.xlsx', 'A1:F10', 50000)
-# print(answer[:, :, -1])
+path = 'C:\\Users\\bushanka\\Desktop\\test.xlsx'
+size = 'A1:C3'
+answer, matrix = starter(path, size, 10500)
+print(answer[:, :, -1])

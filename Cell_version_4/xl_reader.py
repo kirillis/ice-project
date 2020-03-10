@@ -14,24 +14,36 @@ def plotter(number, result):
 
 
 def starter(name_xl, range_xl, iteration_number):
+    """
+    Фунуция инициализации модели. Считывает имя файла Exel 2007-2019, в котором записаны температуры ячеек,
+    диапазон данных в таблице и кол-во итераций. Возвращает матрицу cell_matrix с ячейками класса Cell, а так же
+    3-х мерный массив, в котором записаны матрицы температур на каждой итерации
+    """
+
     wb = load_workbook(filename=name_xl)
-    smth = wb['Sheet1']
-    sheet_cells = np.array(smth[range_xl])
-    temp_list = np.zeros_like(sheet_cells)
+    wb_name = wb['Sheet1']
+
+    sheet_cells = np.array(wb_name[range_xl])  # Чтение файла Exel
+    temp_list = np.zeros_like(sheet_cells)  # Матрица температур
+
     for i in range(sheet_cells.shape[0]):
         for k in range(sheet_cells.shape[1]):
-            temp_list[i][k] = sheet_cells[i][k].value
-    cell_matrix = np.array([[None] * temp_list.shape[1]] * temp_list.shape[0])
+            temp_list[i][k] = sheet_cells[i][k].value  # Запись значений температур ячеек в матрицу
+
+    cell_matrix = np.array([[None] * temp_list.shape[1]] * temp_list.shape[0])  # пустая матрица, в ней будут Cell
+    # ____________ Заполнения матрицы ячейками, в зависимости от знака температур ______________________
     for i in range(sheet_cells.shape[0]):
         for k in range(sheet_cells.shape[1]):
             if temp_list[i][k] > 0:
                 cell_matrix[i][k] = Cg.Cage(temp_list[i][k], Materials.water)
             elif temp_list[i][k] < 0:
                 cell_matrix[i][k] = Cg.Cage(temp_list[i][k], Materials.ice)
-    n = iteration_number
-    answer = mr(cell_matrix, n)
+    # __________________________________________________________________________________________________
+    answer = mr(cell_matrix, iteration_number)  # Рассчет модели, возвращает 3-х мерный массив
+    # ___________ Вывод значений материала каждой ячейки после рассчета ________________________________
     for i in range(sheet_cells.shape[0]):
         for k in range(sheet_cells.shape[1]):
             print(cell_matrix[i][k].material.name, end=' ')
         print('\n', end='')
+    # __________________________________________________________________________________________________
     return answer, cell_matrix
